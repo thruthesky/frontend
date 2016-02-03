@@ -1,0 +1,24 @@
+body {
+}
+.page header {
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:50px;
+    background:blue;
+    color:white;
+}
+.page section.content {
+    margin-top:50px;
+}
+
+.page footer {
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    height:50px;
+    background: grey;
+    color:white;
+}

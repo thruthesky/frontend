@@ -1,0 +1,28 @@
+nav.menu {
+
+}
+nav.menu:after {
+    overflow:auto;
+}
+nav.menu .items {
+    position:relative;
+    display:block;
+    left:0;
+    right:0;
+    height:40px;
+}
+nav.menu .items .item.left {
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+
+nav.menu .items .item.center {
+}
+
+nav.menu .items .item.right {
+    position:absolute;
+    top:0;
+    right:0;
+}

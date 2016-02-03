@@ -1,0 +1,28 @@
+header .menu {
+    padding:.4em;
+}
+header .menu .icon-home {
+    font-size:2em;
+}
+header .menu .icon-more {
+    font-size:2em;
+}
+header .menu .center {
+    font-size:1.4em;
+    text-align:center;
+}
+
+
+
+footer .menu {
+    text-align: center;
+}
+
+footer .menu td {
+    padding:.4em 0 0;
+}
+
+footer .menu i {
+    display:block;
+    font-size:1.2em;
+}
