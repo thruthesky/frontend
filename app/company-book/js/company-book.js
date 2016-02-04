@@ -1,5 +1,9 @@
 var url_backend = 'http://work.org/backend/';
+
 $(function() {
+
+
+
 
     show_header();
     show_footer();

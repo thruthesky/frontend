@@ -17,6 +17,15 @@ core 폴더는 시스템의 핵심 코드로서 왠만해서는 수정을 하지
 
 
 
+# 외부 자원
+
+- jQuery
+- jQueryForm - for web browser upload
+- Underscore.js
+- TaffyDB - http://www.taffydb.com/beginner
+- velocity.js - For animation : http://julian.com/research/velocity/
+
+
 
 
 
@@ -109,8 +118,18 @@ oo
 
 와 같이 하여 바로 컨텐츠 페이지에 넣는다.
 
+## route 를 호출 할 때, callback 으로 처리하기
+
 하지만 바로 컨텐츠 페이지에 넣지 않고 한번 요리를 하고 싶다면,
 
     <li route="company.Controller.searchInformation&category=Church" callback="display_company_list"><div><img src="img/category-icons/church.png"><span class="text">Church</span></div></li>
 
 와 같이 callback attribute 를 추가한다. 그러면 해당 콜백을 수행한다.
+
+
+## route 를 호출 할 때 추가 파라메타 전달하기
+
+    <li route="company.Controller.searchInformation&category=Church" callback="display_company_list">
+
+위와 같이 route="....&param=value&param=value" 와 같이 하면 된다.
+
