@@ -1,0 +1,9 @@
+<div class="company-list">
+    <div class="title">Company List</div>
+    <div class="desc alert alert-info" style="margin-top:.6em;">This is company list.</div>
+    <ul class="list-group">
+        <% _.each( re['data']['list'], function( info ) { %>
+        <li class="list-group-item"><%= info['company_name'] %></li>
+        <% }); %>
+    </ul>
+</div>
