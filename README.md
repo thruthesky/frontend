@@ -133,3 +133,69 @@ oo
 
 위와 같이 route="....&param=value&param=value" 와 같이 하면 된다.
 
+
+
+## route 수행 시 hook 사용하기
+
+route 는 기본적으로 section.content 에 결과 값(HTML) 을 추가하는데,
+
+callback attribute 를 사용하므로서 통째로 결과 처리 루틴을 수정 할 수 있다.
+
+하지만, callback attribute 를 사용하지 않고,
+
+
+route 의 결과를 section.content 에 추가를 하되,
+
+그 전/후로 hook 방식으로 적절한 처리 할 수 있다.
+
+
+예를 들면 아래와 같다.
+
+    route=company.Controller.admin
+
+과 같이 route 를 잡은 경우, 아래와 같이 hook 이 발생한다.
+
+
+    function before_company_Controller_admin($this) {
+        console.log("before:");
+        console.log($this);
+    }
+    function after_company_Controller_admin($this, res) {
+        console.log("after:");
+        console.log($this);
+        console.log(res);
+    }
+
+
+
+# on_click, off_click, on_submit, off_submit
+
+on_click 은 동적으로 HTML 이 로드될 때, element 에 click 이벤트를 건다.
+
+하지만 동적으로 로드되는 HTML 내에 Javascript 로 on_click 이벤트를 걸면, 동적으로 HTML 이 로드 될 때 마다 on_click 이 중복 정의되므로
+
+함수가 여러번 실행될 수 있다.
+
+이 때, off_click() 을 실행하면 기존의 on_click() 을 무효화 한다. 따라서 동적으로 로드되는 HTML 에서 on_click() 을 할 때에는 항상 아래와 같이 먼저 off_click() 을 해 주어야 한다.
+
+
+
+
+<script>
+    function deleteCategory(e) {
+        var $this = $(this);
+        var $p = $this.parents('.row');
+        var rid = $p.attr('rid');
+        ajax_load( url_backend + '?route=company.Controller.categoryDelete&id='+rid, function(re) {
+            if ( re['code'] ) return alert( re['message'] );
+            after_company_Controller_admin();
+        });
+    }
+    off_click('.list .delete-button',deleteCategory);
+    on_click('.list .delete-button',deleteCategory, 'json');
+</script>
+
+
+이것은 on_submit 이나 off_submit 도 마찬가지이며,
+
+frontend 뿐만아니라 backend 의 template 폴더에 있는 HTML 에서도 사용 될 수 있다.

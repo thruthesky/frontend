@@ -15,7 +15,8 @@ var app = {
             if ( typeof callback == 'function' ) callback(this.template[name]);
             return;
         }
-        $.get('template/' + name + '.html', function(re){
+        var url = 'template/' + name + '.html?dummy=' + (new Date()).getTime();
+        $.get(url, function(re){
             app.template[name] = re;
             if ( typeof callback == 'function' ) callback(re);
         })
