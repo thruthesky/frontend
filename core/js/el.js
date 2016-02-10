@@ -10,6 +10,9 @@ var el = {
     },
     body : function() {
         return $('body');
+    },
+    page : function() {
+        return $('div.page');
     }
 
 };

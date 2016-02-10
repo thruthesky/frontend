@@ -1,7 +1,12 @@
 body {
 }
+.page {
+    position:relative;
+    padding: 0 8px;
+}
 .page header {
     position:fixed;
+    z-index: 99999;
     top:0;
     left:0;
     right:0;
@@ -11,10 +16,12 @@ body {
 }
 .page section.content {
     margin-top:50px;
+    margin-bottom:50px;
 }
 
 .page footer {
     position:fixed;
+    z-index: 99999;
     left:0;
     right:0;
     bottom:0;

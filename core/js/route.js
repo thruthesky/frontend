@@ -1,31 +1,42 @@
-$(function(){
 
+$(function(){
     on_click( '[route]', function() {
         var $this = $(this);
         var route = $this.attr('route');
         var callback = $this.attr('callback');
+        var lc = $this.attr('ls-cache');
 
         console.log('route:' + route);
 
 
-        var url = url_backend + "?route=" + route;
+        var option = {};
+        option.url = url_backend + "?route=" + route;
 
-        console.log(url);
+        console.log(option.url);
+
+        // 캐시 옵션 전달.
+        if ( !_.isUndefined(lc) ) option['ls-cache'] = lc;
 
 
         // before route call
         var route_name = s.replaceAll(route, "\\.", '_');
-        var func_name = 'before_' + route_name;
+        var route_func_name = 'before_' + route_name;
 
-        if ( typeof window[func_name] == 'function' ) window[func_name]($this);
+        if ( typeof window[route_func_name] == 'function' ) window[route_func_name]($this);
 
-        console.log("func_name:"+func_name);
+        console.log("func_name:"+route_func_name);
 
-        ajax_load( url, function( res ) {
-
+        ajax_load( option, function( res ) {
 
             // CALLBACK : 콜백이 있으면 에러 처리를 하기도 전에 서버로 부터 받은 정보를 그대로 (파싱도 하지 않고) 콜백으로 넘긴다.
+            // 이 것은 backend 의 route 에서 리턴한 데이터에 에러가 있을 경우, 별도로 처리를 하고자 하는 경우 유용하다.
             if  ( typeof callback != 'undefined' ) return window[callback](res);
+
+            // CALLBACK_ROUTE
+            // callback_route 형식의 콜백이 있으면 호출하고 리턴한다.
+            // 주의: 데이터 파싱하기 전에 리턴한다.
+            route_func_name = 'callback_' + route_name;
+            if ( typeof window[route_func_name] == 'function' ) return window[route_func_name]($this, res);
 
 
             // 데이터 파싱
@@ -40,8 +51,8 @@ $(function(){
             }
 
             // HOOK for : after route call ( 파싱하기 전의 원본 데이터를 넘긴다. )
-            var func_name = 'after_' + route_name;
-            if ( typeof window[func_name] == 'function' ) window[func_name]($this, res);
+            route_func_name = 'after_' + route_name;
+            if ( typeof window[route_func_name] == 'function' ) window[route_func_name]($this, res);
 
         });
     });

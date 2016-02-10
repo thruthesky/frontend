@@ -2,6 +2,44 @@
 
 Web App Frontend Framework
 
+# TODO
+
+
+
+- route 옵션으로 target 을 정 할 수 있도록 할 것.
+- route 옵션으로 ls-cache=초단위, 0 이면, 저장 한 것을 보여주고 바로 다시 캐시 함.
+- route 옵션으로 next-route, next-target 을 정할 수 있도록 한다.
+
+# 코딩 원칙
+
+    - 많은 것을 backend 에서 처리를 하도록 한다.
+
+        특히, HTML 의 동적로드 데이터의 template 처리 등은 backend 에서 해서 frontend 소스 코드 변경 없이
+
+        backend 의 변경으로 frontend 의 변화를 줄 수 있도록 한다.
+
+## backend 에 template 및 css/js 을 둔다.
+
+    - backend 서버에 template 을 둠으로서 frontend 를 실시간으로 변경 시킬 수 있다.
+
+    - 다만, backend 의 template 을 ls-cache 하는 경우, 두번 중복 로드를 할 수 있는데
+
+            자바스크립트 코드를 추가하는 경우 만약, event-listening 을 한다면 새로운 캐시를 하는 경우,
+
+        캐시 내에 있는 자바스크립트와 새로 로드한 자바스크립트에 두번 event 를 listening 하여 중복으로 이벤트가 발생 할 수 있다.
+
+        따라서 한번만 로드되어야 하는 코드의 경우 backend/model/js/backend.js 에 집어 넣는다.
+
+    - CSS 마찬가지로 backend/model/css/backend.css 에 둔다.
+
+
+## backend/model/template/header.html 의 역활
+
+    - 단순히 header 부분의 HTML 만 출력하는 것이 아니라
+
+    - 자바스크립트나 기본 CSS 를 같이 포함하도록 한다. 따라서 앱에 전반적인 영향을 미친다.
+
+
 # 폴더구조
 
 app 폴더는 각 웹/앱 마다 하나의 서브 폴더로 모아놓은 곳이다.
@@ -32,6 +70,15 @@ core 폴더는 시스템의 핵심 코드로서 왠만해서는 수정을 하지
 # 앱/사이트 개발 시작하는 방법
 
 - app 폴더에 서브 폴더를 하나 만들고 그 안에 필요한 파일을 저장하고 코딩을 하므로서 시작된다.
+
+
+# 앱/사이트 개발 작업 방법
+
+HTML 과 CSS 는 backend 에 두고 동적으로 ajax_load() 또는 route 를 통해서 backend 로 부터 불러들인다.
+
+
+
+
 
 
 # BODY 태그의 기본 내용
@@ -100,8 +147,11 @@ core 폴더는 시스템의 핵심 코드로서 왠만해서는 수정을 하지
 패널은 index.html 에서 template 으로 지정한다.
 
 
-//
-oo
+# route - 서버와 통신 및 데이터 송/수신
+
+서버로 데이터를 요청 할 때에는 항상 route 를 사용해야 한다.
+
+
 
 
 
@@ -118,6 +168,11 @@ oo
 
 와 같이 하여 바로 컨텐츠 페이지에 넣는다.
 
+
+# route 의 결과 처리
+
+route 는
+
 ## route 를 호출 할 때, callback 으로 처리하기
 
 하지만 바로 컨텐츠 페이지에 넣지 않고 한번 요리를 하고 싶다면,
@@ -126,6 +181,11 @@ oo
 
 와 같이 callback attribute 를 추가한다. 그러면 해당 콜백을 수행한다.
 
+## route 를 호출 할 때, callback_route 를 사용하기.
+
+    route=model.class.method 와 같다면,
+
+    callback_model_class_method() 가 호출된다.
 
 ## route 를 호출 할 때 추가 파라메타 전달하기
 
@@ -178,6 +238,7 @@ on_click 은 동적으로 HTML 이 로드될 때, element 에 click 이벤트를
 
 이 때, off_click() 을 실행하면 기존의 on_click() 을 무효화 한다. 따라서 동적으로 로드되는 HTML 에서 on_click() 을 할 때에는 항상 아래와 같이 먼저 off_click() 을 해 주어야 한다.
 
+주의 : off_submit() 이 제대로 동작하지 않고 계속 여러번 event 가 발생한다.
 
 
 
@@ -199,3 +260,31 @@ on_click 은 동적으로 HTML 이 로드될 때, element 에 click 이벤트를
 이것은 on_submit 이나 off_submit 도 마찬가지이며,
 
 frontend 뿐만아니라 backend 의 template 폴더에 있는 HTML 에서도 사용 될 수 있다.
+
+
+# localStorage - ls.js 사용법
+
+ls.js 는 localStorage 를 set(), get(), delete() 로 간단히 사용 할 수 있도록 해 놓았다.
+
+ls.setCache(), ls.getCache(), ls.deleteCache(), ls.deleteAllCache() 는 'cache.' 를 앞에 추가하여 localStorage 키를 관리한다.
+
+
+
+
+# template
+
+template 은 각 웹/앱 폴더의 template 폴더에 저장된다.
+
+주로 underscore.js 의 template() 를 활용하기 위한 것으로 아래와 같이 app.loadTemplate(), _.template(), ajax 콜을 혼용해서 사용 할 수 있다.
+
+
+    app.loadTemplate( 'front', function(html) {
+        var t = _.template(html);
+        var m = t();
+        $('.content').html(m);
+
+        $.get(url_backend + '?route=company.Controller.countInformation', function(res) {
+            var re = JSON.parse(res);
+            $('.front-page .count').text( re['data']['count'] );
+        });
+    } );
