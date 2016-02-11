@@ -183,9 +183,16 @@ function call_ajax_load_callback(option, callback, return_type, res) {
  *
  * @param route
  * @param selector
+ * @param ls_cache
  */
-function ajax_load_route(route, selector) {
-    ajax_load( url_backend + '?route=' + route, function(res) {
+function ajax_load_route(route, selector, ls_cache ) {
+    var o = {
+        'url' : url_backend + '?route=' + route
+    };
+    if ( ls_cache ) {
+        o['ls-cache'] = ls_cache;
+    }
+    ajax_load( o, function(res) {
         if ( typeof selector == 'string' ) $(selector).html(res);
         else selector.html(res);
     });

@@ -58,7 +58,7 @@ var app = {
         var m = '<div class="alert-background">' +
                 '<div class="alert-foreground">' +
                     '<div class="alert-message">' + msg + '</div>' +
-                    '<div class="alert-ok-button">확인</div>' +
+                    '<div class="alert-ok-button"><i class="fa fa-times"></i> 확인</div>' +
                 '</div>' +
             '</div>';
         el.page().append(m);
