@@ -288,3 +288,4 @@ template 은 각 웹/앱 폴더의 template 폴더에 저장된다.
             $('.front-page .count').text( re['data']['count'] );
         });
     } );
+    
