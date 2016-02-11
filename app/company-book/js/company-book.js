@@ -2,6 +2,7 @@ var url_backend = 'http://work.org/backend/';
 
 $(function() {
 
+    app.alert("안녕하세요.");
 
 
     add_css( url_backend + 'model/company/css/backend.css');
@@ -48,16 +49,15 @@ function show_header() {
     //ajax_load_route('company.Controller.header', 'header');
     ajax_load({
         url : url_backend + '?route=company.Controller.header',
-        'ls-cache' : 6
+        'ls-cache' : 60 * 60 * 2
     }, function(res) {
         el.header().html(res);
     });
 }
 
 function show_footer() {
-    app.loadTemplate( 'footer', function(html) {
-        $('footer').html(html);
-    } );
+    ajax_load_route('company.Controller.footer', 'footer', 60 * 60 * 2);
+
 }
 
 function show_front_page() {
