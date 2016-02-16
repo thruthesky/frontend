@@ -45,7 +45,7 @@ $(function(){
                 var $t = $('#user-list-template');
                 var m = _.template($t.html())({ data: data });
                 $t.remove();
-                $('.content').append(m);
+                $('.content .users').append(m);
             },
             error : function (re) {
                 console.log("error: " + re);

@@ -6,10 +6,6 @@ Web App Frontend Framework
 
 
 
-- route 옵션으로 target 을 정 할 수 있도록 할 것.
-- route 옵션으로 ls-cache=초단위, 0 이면, 저장 한 것을 보여주고 바로 다시 캐시 함.
-- route 옵션으로 next-route, next-target 을 정할 수 있도록 한다.
-
 # 코딩 원칙
 
     - 많은 것을 backend 에서 처리를 하도록 한다.
@@ -17,6 +13,18 @@ Web App Frontend Framework
         특히, HTML 의 동적로드 데이터의 template 처리 등은 backend 에서 해서 frontend 소스 코드 변경 없이
 
         backend 의 변경으로 frontend 의 변화를 줄 수 있도록 한다.
+
+    - 인터넷이 연결되지 않았다면,
+    
+        기본 header, footer 와 content 를 보여주고, 인터넷 접속을 하라고 한다.
+        
+        즉, app 의 index.html 에서 로컬 앱 디스크 영역에 header, footer, content 를 가지고 있어야 하며
+        
+        적절한 이미지와 CSS 디자인이 되어야 한다.
+        
+        
+
+
 
 ## backend 에 template 및 css/js 을 둔다.
 
@@ -57,6 +65,11 @@ core 폴더는 시스템의 핵심 코드로서 왠만해서는 수정을 하지
 
 # 외부 자원
 
+- Font Awesome 4.5 가 core/etc/font-awesome 에 포함되어져 있다. 작은 아이콘을 만들 때 유용하다.
+- Github 의 Octicons 가 포함되어져 있다. 큰 버튼(헤더/푸터 등)을 만들 때 유용하다. https://octicons.github.com/
+
+
+
 - jQuery
 - jQueryForm - for web browser upload
 - Underscore.js
@@ -75,6 +88,18 @@ core 폴더는 시스템의 핵심 코드로서 왠만해서는 수정을 하지
 # 앱/사이트 개발 작업 방법
 
 HTML 과 CSS 는 backend 에 두고 동적으로 ajax_load() 또는 route 를 통해서 backend 로 부터 불러들인다.
+
+
+
+# CSS 구조 ( CSS Framework )
+
+기본적으로 SMACSS 를 따른다. 주로 카테고리화 하는 것을 따른다.
+
+layout.css 에 header, content, footer 를 관리하고 있다.
+
+header 는 상단에 fixed 되었고, footer 는 하단에 fixed 되어있다.
+
+header 와 footer 의 높이는 각각 50px 이며, 이에 따라 content 는 top-margin, bottom-margin 이 50px 로 되어져 있다.
 
 
 
@@ -152,28 +177,55 @@ HTML 과 CSS 는 backend 에 두고 동적으로 ajax_load() 또는 route 를 �
 서버로 데이터를 요청 할 때에는 항상 route 를 사용해야 한다.
 
 
-
-
-
-# route 를 통해서 backend 와 통신하며 view 하기
-
+## route 를 통해서 backend 와 통신하며 view 출력 하기
 
     <td width="25%" route="company.Controller.admin"><i class="nav-link fa fa-folder-o"></i>Admin</td>
 
 위 예제를 보면 route='company.Controller.admin' 을 볼 수 있다.
 
-클릭을 하면, route.js 에서 click 이벤트를 받으며 backend 서버의 해당 model/class/method 를 호출하고 결과를
+어떤 태그이든 [route] attribute 를 가지고 있다면, 해당 route 를 백엔드에서 실행한다.
 
-    el.content().html(...)
+    - 이 때, 결과는 [callback] attribute 를 추가하거나 route 이름에 해당하는 hook 을 통해서 처리를 하면 된다.
+
+    - 만약, [callback] 이나 hook 이 없다면 router 에서 출력하는 결과는 자동으로 content 에 표시된다.
+
+상세히 설명하자면, 위 예제에서
+
+    * TD 태그를 클릭 하면,
+    
+    * route.js 에서 click 이벤트를 받으며
+     
+    * ajax 호출을 통해서 backend 서버의 해당 model/class/method 를 호출하고
+    
+    * 결과를 [callback] 이나 hook 에 의해서 처리하거나 el.content().html(...) 에 표시한다.
+
 
 와 같이 하여 바로 컨텐츠 페이지에 넣는다.
 
 
 # route 의 결과 처리
 
-route 는
+route 는 backend 와 통신 할 때 사용한다.
 
-## route 를 호출 할 때, callback 으로 처리하기
+[route] 속성 클릭, 프로그램적 호출인 $.ajax(), $.get(), $.post(), ajax_load(), ajax_load_route() 등과 같은 함수를 통해서
+
+backend 의 route 를 호출 할 수 있는데, 각각의 처리 결과가 틀리다.
+
+
+## [route] 속성만 지정하면,
+
+backend 의 php method 의 결과를 받아서,
+
+json 파싱을 하는데,
+ 
+    - 에러가 있으면 리턴된 내용을 그대로 content 에 추가하고,
+
+    - 에러가 없으면, data.html 을 content 에 추가한다.
+
+
+
+
+## [route] 속성을 통해서 backend route 를 호출 할 때, callback 으로 처리하기
 
 하지만 바로 컨텐츠 페이지에 넣지 않고 한번 요리를 하고 싶다면,
 
@@ -181,13 +233,17 @@ route 는
 
 와 같이 callback attribute 를 추가한다. 그러면 해당 콜백을 수행한다.
 
-## route 를 호출 할 때, callback_route 를 사용하기.
+## [route] 속성을 통해서 route 를 호출 할 때, callback_route hook 를 사용하기.
 
+직접 ajax 호출하는 것과 달리 [route] 속성을 통해서 클릭을 하여 backend route 를 호출하면, hook 함수가 정의되어져 있다면 호출된다.
+
+- 예를 들어 [route] 속성이
+    
     route=model.class.method 와 같다면,
 
-    callback_model_class_method() 가 호출된다.
+- callback_model_class_method() 가 호출된다.
 
-## route 를 호출 할 때 추가 파라메타 전달하기
+## [route] 속성을 통해서 route 를 호출 할 때 추가 파라메타 전달하기
 
     <li route="company.Controller.searchInformation&category=Church" callback="display_company_list">
 

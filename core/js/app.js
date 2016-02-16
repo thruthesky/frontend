@@ -7,6 +7,13 @@ var app = {
         document.addEventListener('deviceready', function() {
 
         });
+        on_click('[url]', function(e) {
+
+            // alert($(this).attr('url'));
+
+            location.href= $(this).attr('url');
+
+        });
     },
     template : [],
     /**

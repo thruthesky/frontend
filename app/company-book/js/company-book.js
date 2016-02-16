@@ -2,8 +2,9 @@ var url_backend = 'http://work.org/backend/';
 
 $(function() {
 
-    app.alert("안녕하세요.");
-
+    // 테스트 코드를 backend.js 에서 작성한다.
+    //app.alert("안녕하세요.");
+    // ls.deleteAll();
 
     add_css( url_backend + 'model/company/css/backend.css');
     add_javascript( url_backend + 'model/company/js/backend.js');
@@ -15,10 +16,6 @@ $(function() {
     show_front_page();
 
     app.loadTemplate('company-list');
-
-    setTimeout(function(){
-        el.footer().find('[route="company.Controller.admin"]').click();
-    },200);
 
     initEventCompanyBook();
 
@@ -49,14 +46,14 @@ function show_header() {
     //ajax_load_route('company.Controller.header', 'header');
     ajax_load({
         url : url_backend + '?route=company.Controller.header',
-        'ls-cache' : 60 * 60 * 2
+        'ls-cache' : 1
     }, function(res) {
         el.header().html(res);
     });
 }
 
 function show_footer() {
-    ajax_load_route('company.Controller.footer', 'footer', 60 * 60 * 2);
+    ajax_load_route('company.Controller.footer', 'footer', 1);
 
 }
 

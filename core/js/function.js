@@ -17,6 +17,14 @@ function trace(v) {
     console.log('[' + count_trace + '] ' + name + '() ' + v);
 }
 
+alert = function ( str ) {
+    app.alert(str);
+};
+confirm = function ( str ) {
+    app.alert("confirm 대신 app.confirm 을 사용하십시오.");
+};
+
+
 /**
  *
  * @param url
@@ -114,8 +122,6 @@ function off_submit(selector, callback) {
  * @param return_type - 'json' 으로 입력되면 리턴 값이 json 이다.
  */
 function ajax_load(option, callback, return_type) {
-
-
     /**
      * option 이 문자열이면, URL 값을 가지고 있다고 가정하고, 객체화 한다.
      */
@@ -128,7 +134,7 @@ function ajax_load(option, callback, return_type) {
     option.cache = false;
 
     var url_key;
-    if ( ! _.isUndefined(option['ls-cache']) ) {
+    if ( ! _.isUndefined(option['ls-cache']) &&  option['ls-cache'] ) {
         url_key = btoa( option.url );
         console.log("url_key: " + url_key);
         var res = ls.getCache( url_key );
@@ -183,7 +189,22 @@ function call_ajax_load_callback(option, callback, return_type, res) {
  *
  * @param route
  * @param selector
+ *      - undefined 이면, el.content() 에 데이터를 넣는다.
+ *      - 문자열이면 jQuery 의 selector 로 인식하여 해당 $(selector) 에 내용을 입력한다.
+ *      - function 이면, 해당 function 을 호출한다.
+ *      - 위 조건이 모두 아니면 jQuery 객체로 인식하여 .html(res) 로 내용을 입력한다.
+ *  @note 참고로 ajax_load() 에서 리턴되는 값은 HTML 일 수도 있으며 json 데이터 일 수도 있다.
+ *          하지만, 여기서는 무조건 HTML 값으로 인식하여 그냥 해당 selector 에 데이터를 부어버린다.
  * @param ls_cache
+ *
+ * @code
+ *
+
+    ajax_load_route( 'data.Controller.fileDelete&id=' + fid, function(res) {
+        console.log(res);
+    });
+ *
+ * @endcode
  */
 function ajax_load_route(route, selector, ls_cache ) {
     var o = {
@@ -192,8 +213,11 @@ function ajax_load_route(route, selector, ls_cache ) {
     if ( ls_cache ) {
         o['ls-cache'] = ls_cache;
     }
+    else o['ls-cache'] = false;
     ajax_load( o, function(res) {
-        if ( typeof selector == 'string' ) $(selector).html(res);
+        if ( typeof selector == 'undefined' ) el.content().html(res);
+        else if ( typeof selector == 'string' ) $(selector).html(res);
+        else if ( typeof selector == 'function' ) selector( res );
         else selector.html(res);
     });
 }

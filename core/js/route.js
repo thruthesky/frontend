@@ -1,4 +1,11 @@
-
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 $(function(){
     on_click( '[route]', function() {
         var $this = $(this);
@@ -40,7 +47,14 @@ $(function(){
 
 
             // 데이터 파싱
-            var re = JSON.parse(res);
+            try {
+                var re = JSON.parse(res);
+            }
+            catch ( e ) {
+                el.content().html( res );
+                return;
+            }
+
 
             // 에러 처리 : 이후 부터는 에러가 없어야지만 아래의 루틴이 처리 가능하다.
             if ( re['code'] ) return alert(re['message']);

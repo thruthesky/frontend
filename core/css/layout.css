@@ -11,8 +11,7 @@ body {
     left:0;
     right:0;
     height:50px;
-    background:blue;
-    color:white;
+    background-color: #dfdfdf;
 }
 .page section.content {
     margin-top:50px;
@@ -26,6 +25,5 @@ body {
     right:0;
     bottom:0;
     height:50px;
-    background: grey;
-    color:white;
+    background-color: #dfdfdf;
 }
