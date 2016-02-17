@@ -344,4 +344,100 @@ template 은 각 웹/앱 폴더의 template 폴더에 저장된다.
             $('.front-page .count').text( re['data']['count'] );
         });
     } );
-    
+
+# app.alert
+
+앱에서 사용가능한 alert 박스 메세지로서 aync 로 동작을 한다.
+
+확인 버튼을 클릭하여 alert 박스 창이 닫기면 callback 이 실행된다.
+
+시간이 경과하여 자동으로 창이 닫기면 실행되지 않는다.
+
+
+
+
+예제)
+    app.alert("안녕하세요.", function() {
+        console.log('app.alert closed');
+    },
+    10);
+
+
+# 패널
+
+패널은 index.html 에 기본 구조만 CSS 만 등록하고 실제 내용 추가나 디자인은 backend.js 자바스크립트에서 한다.
+
+예제) frontend 의 HTML 예제
+
+    <div class="page">
+        <header>.header</header>
+        <nav class="panel-menu"><div class="menus"><ul></ul></div></nav>
+        <section class="content">.content</section>
+        ....
+    </div>
+
+위와 같이 .panel-menu 는 nav 태그에 작성되어야하며 내부에 ul.menus 를 가져야한다.
+
+그리고 page 에 속해 있어야 하며 header 바로 밑에 지정되어야 한다.
+
+app.panel 에 panel menu 관련 루틴이 있다.
+
+.open-panel-menu-button 이벤트를 리스닝하고 클릭하면 열기를 한다.
+
+닫기는 특별한 class 를 이벤트를 리스닝하지 않고,
+- .page .content
+- .page footer
+- nav.panel-menu ul li
+- .open-panel-menu-button
+
+를 리스닝하고 클릭하면 panel menu 를 닫는다. .open-panel-menu-button 은 panel 열려져 있는 경우 닫는다. 
+
+app.panel.init() 를 참고한다.
+
+예제) panel menu 열기/닫기 예제
+
+    setTimeout(app.panel.close, 500);
+    setTimeout(app.panel.open, 1300);
+
+
+다음은 backend 의 자바스크립트에서 메뉴를 추가하는 예이다.
+
+예제) backend.js 가 로드 될 때, panel 메뉴에 항목을 구하는 예 
+
+    var m = '<li class="item no1">인터넷을 연결하세요.</li>' +
+        '<li class="item no2">인터넷을 연결하세요.</li>' +
+        '<li class="item close close-panel-menu-button">메뉴닫기</li>' +
+        '';
+    app.panel.el().find('ul').append(m);
+
+위 예에서 보면, .close-panel-menu-button 을 추가하는 것을 알 수 있다.
+
+
+헤더에는 아래와 같이 .open-panel-menu-button 을 추가하면 된다.
+
+예제) panel menu 를 열기 위한 버튼 추가
+
+    <td width="25%" class="open-panel-menu-button">...</td>
+
+
+
+예제)
+
+
+
+
+
+# 이벤트
+
+## url 속성
+
+url 속성이 있는 태그를 클릭하면 해당 url 로 이동한다.
+
+    <td width="25%" class="home-button left" url="index.html">
+        <i class="nav-link fa fa-home icon-home"></i>
+    </td>
+
+위 예제에서는 현재 페이지를 indexhtml 로 이동 시킨다.
+
+
+

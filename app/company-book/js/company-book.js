@@ -1,4 +1,4 @@
-var url_backend = 'http://work.org/backend/';
+var url_backend = 'http://work.org/backend/'; // 이 값은 app.urlServer() 에서 사용된다.
 
 $(function() {
 

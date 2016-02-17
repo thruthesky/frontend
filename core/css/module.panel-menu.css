@@ -1,0 +1,12 @@
+.page nav.panel-menu {
+    right:-4096px;
+    background-color: #e9e2c4;
+}
+.page nav.panel-menu ul {
+    list-style: none;
+    margin:0;
+    padding:0;
+}
+.page nav.panel-menu li {
+    padding:.4em 1em;
+}

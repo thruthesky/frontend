@@ -17,7 +17,8 @@ $(function(){
 
 
         var option = {};
-        option.url = url_backend + "?route=" + route;
+
+        option.url = url_backend + "?route=" + route + app.getLoginSignature();
 
         console.log(option.url);
 

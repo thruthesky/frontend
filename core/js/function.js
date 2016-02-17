@@ -139,20 +139,20 @@ function ajax_load(option, callback, return_type) {
         console.log("url_key: " + url_key);
         var res = ls.getCache( url_key );
         if ( res ) {
-            console.log("Cache exists.");
+            console.log("CACHE exists: calls 'callback'");
             call_ajax_load_callback(option, callback, return_type, res.value);
             var old_date = new Date(parseInt(res.stamp));
             var exp_date = (new Date()).getTime() - option['ls-cache'] * 1000;
             if ( old_date > exp_date ) {
-                console.log("cache is not expired, yet. just return");
+                console.log("CACHE is not expired, yet. Do nothing. Just return");
                 return;
             }
             else {
-                console.log("cache expired. going to ajax_load()")
+                console.log("CACHE expired. going to call ajx and re-CACHE.")
             }
         }
         else {
-            console.log("No cache saved. no cache callback. going to call ajax_load()");
+            console.log("No CACHE saved. no cache callback. going to call ajax_load()");
         }
     }
 
@@ -185,8 +185,9 @@ function call_ajax_load_callback(option, callback, return_type, res) {
 }
 
 /**
- * ajax_load('...?route=...', function(){...}); 와 같은 문장을 더 짧게 한다.
+ * ajax_load('...?route=...', function(){...}); 와 같은 문장을 더 짧게 하면서 필요한 코드를 추가한다.
  *
+ * @Attention 회원 로그인을 한 경우, username 와 signature 를 자동으로 서버로 전송한다.
  * @param route
  * @param selector
  *      - undefined 이면, el.content() 에 데이터를 넣는다.
@@ -195,11 +196,14 @@ function call_ajax_load_callback(option, callback, return_type, res) {
  *      - 위 조건이 모두 아니면 jQuery 객체로 인식하여 .html(res) 로 내용을 입력한다.
  *  @note 참고로 ajax_load() 에서 리턴되는 값은 HTML 일 수도 있으며 json 데이터 일 수도 있다.
  *          하지만, 여기서는 무조건 HTML 값으로 인식하여 그냥 해당 selector 에 데이터를 부어버린다.
- * @param ls_cache
+ * @param ls_cache - 초 단위. 해당 초 만큼 경과 했으면 다시 캐시를 저장한다. 이 값이 생략되면 캐시를 하지 않는다.
+ *
  *
  * @code
  *
-
+ * ajax_load_route('company.Controller.footer', 'footer', 1);
+ *
+ *
     ajax_load_route( 'data.Controller.fileDelete&id=' + fid, function(res) {
         console.log(res);
     });
@@ -207,6 +211,7 @@ function call_ajax_load_callback(option, callback, return_type, res) {
  * @endcode
  */
 function ajax_load_route(route, selector, ls_cache ) {
+    route += app.getLoginSignature();
     var o = {
         'url' : url_backend + '?route=' + route
     };
@@ -220,4 +225,28 @@ function ajax_load_route(route, selector, ls_cache ) {
         else if ( typeof selector == 'function' ) selector( res );
         else selector.html(res);
     });
+}
+
+
+/**
+ *
+ * 회원 로그인이 변경 될 때마다 이 함수를 호출 하면된다.
+ *
+ * @note 이 함수는 로그인을 했을 때, .user-in 을 보여주고, .user-out 을 감춘다.
+ *          반대로, 로그 아웃을 했을 때, .user-in 을 감추고, .user-out 을 보여준다.
+ *
+ *          이 함수는 클래스를 바탕으로 적용하므로 사용자 로그인/로그아웃, 회원가입/정보수정 두개를 같이 동시에 적용 할 수 있다.
+ *
+ *
+ */
+function updateUserLogin() {
+    var username = ls.get('username');
+    if ( username ) {
+        $('.user-in').show();
+        $('.user-out').hide();
+    }
+    else {
+        $('.user-in').hide();
+        $('.user-out').show();
+    }
 }

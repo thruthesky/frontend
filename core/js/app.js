@@ -7,13 +7,24 @@ var app = {
         document.addEventListener('deviceready', function() {
 
         });
+
+
+
+
+        /**
+         * url 속성이 있는 태그를 클릭하면 해당 url 로 이동한다.
+         */
         on_click('[url]', function(e) {
-
-            // alert($(this).attr('url'));
-
             location.href= $(this).attr('url');
-
         });
+
+
+
+        $(window).resize(app.resize);
+        app.resize();
+    },
+    urlServer : function () {
+        return url_backend;
     },
     template : [],
     /**
@@ -35,9 +46,9 @@ var app = {
         }
         var url = 'template/' + name + '.html?dummy=' + (new Date()).getTime();
         $.get(url, function(re){
-            app.template[name] = re;
-            if ( typeof callback == 'function' ) callback(re);
-        })
+                app.template[name] = re;
+                if ( typeof callback == 'function' ) callback(re);
+            })
             .fail(function(xhr) {
                 alert('Error: failed on loading template');
             });
@@ -52,21 +63,21 @@ var app = {
     /**
      *
      * @code 예제
-            app.alert("알림 메세지입니다.");
+     app.alert("알림 메세지입니다.");
      * @endcode
      * @code 3 초 후 사라지는 예제
-     *      app.alert("알림 메세지입니다.", 3);
+     *      app.alert("알림 메세지입니다.", null, 3);
      * @endcode
      * @param msg
      * @param hide
      */
-    alert : function(msg, hide) {
+    alert : function(msg, callback, hide) {
         app.removeAlert();
         var m = '<div class="alert-background">' +
-                '<div class="alert-foreground">' +
-                    '<div class="alert-message">' + msg + '</div>' +
-                    '<div class="alert-ok-button"><i class="fa fa-times"></i> 확인</div>' +
-                '</div>' +
+            '<div class="alert-foreground">' +
+            '<div class="alert-message">' + msg + '</div>' +
+            '<div class="alert-ok-button"><i class="fa fa-times"></i> 확인</div>' +
+            '</div>' +
             '</div>';
         el.page().append(m);
         $('.alert-background').css({
@@ -88,13 +99,83 @@ var app = {
         $('.alert-ok-button').css({
             'text-align': 'right'
         });
-        $('.alert-ok-button').click( app.removeAlert );
+        $('.alert-ok-button').click( function() {
+            app.removeAlert(callback);
+        } );
         if ( hide ) {
             setTimeout( app.removeAlert, hide * 1000 );
+            //setTimeout( function() { app.removeAlert(callback); }, hide * 1000 );
         }
     },
-    removeAlert : function() {
+    removeAlert : function(callback) {
         $('.alert-background').remove();
+        if ( typeof callback == 'function' ) {
+            console.log("remove alert callback caled");
+            callback();
+        }
+    },
+    resize : function() {
+        // console.log('resize');
+        var wh = $(window).height();
+        var hh = el.header().height();
+        var fh = el.footer().height();
+        el.content().css('min-height', wh - hh - fh);
+        /*
+         console.log(wh);
+         console.log(hh);
+         console.log(fh);
+         */
+    },
+    getLoginSignature : function () {
+        var re = '';
+        var username = ls.get('username');
+        if (username) {
+            re += '&username=' + username;
+            re += '&signature=' + ls.get('signature');
+        }
+        return re;
+
     }
 };
 app.init();
+
+/**
+ *
+ * @note README.md 를 참고
+ *
+ */
+app.panel = {
+    init : function() {
+        on_click('.open-panel-menu-button', app.panel.open);
+        //on_click('.close-panel-menu-button', app.panel.close);
+        on_click('footer', app.panel.close);
+        on_click('.page .content', app.panel.close);
+        on_click('nav.panel-menu ul li', app.panel.close);
+
+    },
+    el : function() {
+        return $('.page nav.panel-menu');
+    },
+    open : function () {
+        var $el = app.panel.el();
+        // If panel is already open?
+        {
+            var right = $el.css('right').replace('px', '');
+            if ( right == 0 ) {
+                app.panel.close();
+                return;
+            }
+        }
+
+
+        var w = $el.width();
+        $el.css('right', -w);
+        $el.velocity({right: 0}, 'fast');
+    },
+    close : function () {
+        var $el = app.panel.el();
+        var w = $el.width();
+        $el.velocity({right: -w}, 'fast');
+    }
+};
+app.panel.init();
