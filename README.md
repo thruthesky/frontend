@@ -4,7 +4,26 @@ Web App Frontend Framework
 
 # TODO
 
+- (검토: 사실 jQuery UI 도 별거 없다.) jQueryUI 를 집어 넣을 것.
+- (검토) jQueryMobile 을 집어 넣을 것.
+- (검토 할 것: jQueryMobile 자체가 별거 있는거 아닌데, 어려운 코딩을 해야한다.) 인터넷에 연결되면 서버의 index.php 로 이동하게하고, 곧 바로 100% jQueryMobile 을 사용하게 한다.
 
+    - 즉, jQueryMobile 코드를 앱에 저장하고 데이터를 서버에서 받아오는 것이 아니라,
+    - jQueryMobile 데이터 자체를 서버에 놔 두고,
+        - 앱에서 jQueryMobile 관련 코드를 서버에서 바로 다운로드하게 한다.
+        - 앱이 온라인 상태이면, 자동으로 http://server.com/index.php 로 이동하게하여 100% jQueryMobile 이 실행되게 한다.
+
+
+- app.js 를 forntend.js 로 통일하고 클래스 명칭을 f 로 통일한다.
+
+그리고 모든 함수와 메소드를 집어넣는다.
+
+f.route() 와 같이
+f.db.set()
+f.el.content()
+
+
+백엔드는 backend.js 로 통일하고 클래스 명칭ㅇ르 b 로 한다>
 
 # 코딩 원칙
 
@@ -283,6 +302,25 @@ route 의 결과를 section.content 에 추가를 하되,
     }
 
 
+# ajax_load_route() 을 사용법
+
+
+ajax_load_route() 는 backend 의 route 로 연결을 했는데,
+
+- 비교적 에러가 날 확률이 적거나
+- route 호출 후, 별도의 처리 과정이 없이 내용을 본문에 추가하려는 경우에
+
+
+사용 할 수 있다.
+
+예제) HTML FORM 문장에 class 등으로 아래와 같이 이벤트를 리스닝해서, 라우트를 추가하고, FORM 값을 serialize 해서 ajax_load_route() 로 전달하면 된다.
+    
+    function on_form_search_submit(e) {
+        e.preventDefault();
+        var route = 'company.Controller.search&' + $(this).serialize();
+        ajax_load_route( route );
+    }
+
 
 # on_click, off_click, on_submit, off_submit
 
@@ -424,6 +462,33 @@ app.panel.init() 를 참고한다.
 예제)
 
 
+# 회원 별 정보 보여주기
+
+username="xxxx" 속성을 가지고 있는 Element 는 해당 사용자 인 경우에만 나타난다.
+
+예를 들면 관리자 인 경우에만 보여주고자 한다면,
+
+    <p username="admin">...</p>
+
+와 같이 하면, 위 항목은 username 이 admin 인 경우에만 나타난다.
+
+주로,
+
+- 관리자인지 아닌지
+- 특정 회원 로그이인지 아닌지
+- 비 회원 로그인인지 아닌지를 판별할 수 있다.
+
+
+를 판별 할 때, 사용된다.
+
+이를 잘 활용하면, .user-in 과 .user-out 의 용도로도 활용이 가능하다.
+
+예제) username 속성의 활용 예제
+    
+    '<li class="item" username="admin" route="company.Controller.admin">관리자 페이지</li>' +
+    '<li class="item" username="user3" route="company.Controller.admin">user3</li>' +
+    '<li class="item" username="" route="company.Controller.admin">비 로그인</li>' +
+
 
 
 
@@ -439,5 +504,37 @@ url 속성이 있는 태그를 클릭하면 해당 url 로 이동한다.
 
 위 예제에서는 현재 페이지를 indexhtml 로 이동 시킨다.
 
+
+
+
+# .rows .row .caption .text CSS 적용
+
+주로 테이블 형식 또는 리스트 형식을 표현 할 때 사용한다.
+
+값이 없으면 .row 전체를 표현하지 않는 것이 좋다.
+
+caption 이 필요 없으면 그냥 .row 안에 바로 내용을 집어 넣으면 된다.
+
+이 때, 별도의 추가 css 디자인을 적절히 해 주면 된다.
+
+예제)
+   
+
+    <div class="rows">
+        <div class="row"><?php echo $company->title?></div>
+        <div class="row">
+            <span class="caption">회사명</span>
+            <span class="text"><?php echo $company->company_name?></span>
+        </div>
+        <div class="row">
+            <span class="caption">대표자</span>
+            <span class="text"><?php echo $company->ceo_name?></span>
+        </div>
+        <div class="row">
+            <span class="caption">홈페이지</span>
+            <span class="text"><?php echo $company->homepage?></span>
+        </div>
+        <div class="row"><?php echo $company->content?></div>
+    </div>
 
 

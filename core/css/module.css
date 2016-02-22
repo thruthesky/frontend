@@ -16,3 +16,17 @@
     border-radius: 3px;
 }
 /* EO Button */
+
+
+/** Box Module */
+.box {
+    padding: 1em;
+    background-color:#b9b9b9;
+    font-size:1.2em;
+    font-weight:normal;
+}
+.box.warning {
+    background-color: #979315;
+    color:white;
+}
+/* EO Box Module */

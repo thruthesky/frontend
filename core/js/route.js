@@ -13,6 +13,7 @@ $(function(){
         var callback = $this.attr('callback');
         var lc = $this.attr('ls-cache');
 
+        //console.log("username: " + ls.get('username'));
         console.log('route:' + route);
 
 

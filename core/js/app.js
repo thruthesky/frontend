@@ -40,7 +40,7 @@ var app = {
      */
     loadTemplate : function (name, callback) {
         if ( typeof this.template[name] != 'undefined' ) {
-            console.log("cached:");
+            //console.log("cached:");
             if ( typeof callback == 'function' ) callback(this.template[name]);
             return;
         }
@@ -110,7 +110,7 @@ var app = {
     removeAlert : function(callback) {
         $('.alert-background').remove();
         if ( typeof callback == 'function' ) {
-            console.log("remove alert callback caled");
+            //console.log("remove alert callback caled");
             callback();
         }
     },
@@ -158,24 +158,26 @@ app.panel = {
     },
     open : function () {
         var $el = app.panel.el();
-        // If panel is already open?
-        {
-            var right = $el.css('right').replace('px', '');
-            if ( right == 0 ) {
-                app.panel.close();
-                return;
-            }
-        }
 
+        // Just return if panel is already open...
+        if ( app.panel.isOpen() ) return app.panel.close();
 
         var w = $el.width();
         $el.css('right', -w);
         $el.velocity({right: 0}, 'fast');
     },
     close : function () {
+        // Just return if panel is already closed...
+        if ( app.panel.isClose() ) return;
         var $el = app.panel.el();
         var w = $el.width();
         $el.velocity({right: -w}, 'fast');
+    },
+    isOpen : function() {
+        return right = app.panel.el().css('right').replace('px', '') == 0;
+    },
+    isClose : function() {
+        return ! app.panel.isOpen();
     }
 };
 app.panel.init();

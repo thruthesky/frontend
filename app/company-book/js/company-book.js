@@ -1,10 +1,9 @@
+var app_version = 201602021;
 var url_backend = 'http://work.org/backend/'; // 이 값은 app.urlServer() 에서 사용된다.
-
+//url_backend = 'http://jungeunsu.com/backend/';
 $(function() {
 
-    // 테스트 코드를 backend.js 에서 작성한다.
-    //app.alert("안녕하세요.");
-    // ls.deleteAll();
+    // 테스트 코드를 backend.js 에서 작성 하면 된다.
 
     add_css( url_backend + 'model/company/css/backend.css');
     add_javascript( url_backend + 'model/company/js/backend.js');
@@ -15,7 +14,7 @@ $(function() {
     show_footer();
     show_front_page();
 
-    app.loadTemplate('company-list');
+    app.loadTemplate('front-page');
 
     initEventCompanyBook();
 
@@ -43,23 +42,26 @@ function checkVersion() {
 
 
 function show_header() {
+    ajax_load_route('company.Controller.header', 'header', 100);
     //ajax_load_route('company.Controller.header', 'header');
+    /*
     ajax_load({
         url : url_backend + '?route=company.Controller.header',
-        'ls-cache' : 1
+        'ls-cache' : 100
     }, function(res) {
         el.header().html(res);
     });
+    */
 }
 
 function show_footer() {
-    ajax_load_route('company.Controller.footer', 'footer', 1);
+    ajax_load_route('company.Controller.footer', 'footer', 100);
 
 }
 
 function show_front_page() {
 
-    ajax_load_route( 'company.Controller.frontPage', el.content() );
+    ajax_load_route( 'company.Controller.frontPage', el.content(), 60 * 60 * 24 * 7 );
     /*
     ajax_load( url_backend + '?route=company.Controller.frontPage', function( res ) {
         el.content().html(res);
@@ -90,3 +92,6 @@ function reloadCategoryList() {
 }
 */
 
+function goTop() {
+    scrollTo(0,0);
+}

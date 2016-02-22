@@ -1,3 +1,13 @@
 .table-menu td {
     height:50px;
 }
+
+
+.view .title {
+    padding:1em;
+    font-size:1.4em;
+}
+.view .content {
+    padding:1em;
+    background-color:white;
+}

@@ -136,7 +136,7 @@ function ajax_load(option, callback, return_type) {
     var url_key;
     if ( ! _.isUndefined(option['ls-cache']) &&  option['ls-cache'] ) {
         url_key = btoa( option.url );
-        console.log("url_key: " + url_key);
+        console.log("cache for : " + option.url);
         var res = ls.getCache( url_key );
         if ( res ) {
             console.log("CACHE exists: calls 'callback'");
@@ -157,7 +157,7 @@ function ajax_load(option, callback, return_type) {
     }
 
 
-    console.log(option.url);
+    //console.log(option.url);
 
     var promise = $.ajax(option);
     promise.done(function(res) {
@@ -173,13 +173,13 @@ function ajax_load(option, callback, return_type) {
 }
 
 function call_ajax_load_callback(option, callback, return_type, res) {
-    console.log("call_ajax_load_callback()");
+    //console.log("call_ajax_load_callback()");
     if ( return_type == 'json' ) {
-        console.log("json parse");
+        //console.log("json parse");
         res = JSON.parse(res);
     }
     if ( typeof callback == 'function' ) {
-        console.log("call callback");
+        //console.log("call callback");
         callback(res);
     }
 }
@@ -209,6 +209,7 @@ function call_ajax_load_callback(option, callback, return_type, res) {
     });
  *
  * @endcode
+ * @attention 흔히 하는 실수 중, route 파라메타를 실제 route 경로가 아닌 http 로 시작하는 URL 경로로 입력하는 경우가 있다.
  */
 function ajax_load_route(route, selector, ls_cache ) {
     route += app.getLoginSignature();
@@ -220,7 +221,7 @@ function ajax_load_route(route, selector, ls_cache ) {
     }
     else o['ls-cache'] = false;
     ajax_load( o, function(res) {
-        if ( typeof selector == 'undefined' ) el.content().html(res);
+        if ( typeof selector == 'undefined' || selector == null ) el.content().html(res);
         else if ( typeof selector == 'string' ) $(selector).html(res);
         else if ( typeof selector == 'function' ) selector( res );
         else selector.html(res);
@@ -230,7 +231,11 @@ function ajax_load_route(route, selector, ls_cache ) {
 
 /**
  *
- * 회원 로그인이 변경 될 때마다 이 함수를 호출 하면된다.
+ * 다음의 경우에 이 함수가 호출되어야 한다.
+ *
+ * - 회원 로그인, 로그아웃
+ * - .user-in, .user-out, [username] 관련 HTML 코드가 동적으로 포함 될 때,
+ *
  *
  * @note 이 함수는 로그인을 했을 때, .user-in 을 보여주고, .user-out 을 감춘다.
  *          반대로, 로그 아웃을 했을 때, .user-in 을 감추고, .user-out 을 보여준다.
@@ -249,4 +254,7 @@ function updateUserLogin() {
         $('.user-in').hide();
         $('.user-out').show();
     }
+
+    $('[username]').hide();
+    $('[username="'+username+'"').show();
 }

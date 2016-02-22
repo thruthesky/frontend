@@ -1,0 +1,35 @@
+.rows {
+    background-color: #cadbe9;
+}
+
+.rows .row {
+    position:relative;
+    overflow:auto;
+    border-bottom: 1px solid white;
+}
+
+.row .row:after {
+    display:block;
+    content:'';
+    clear:both;
+}
+
+.rows .row .caption {
+    position:absolute;
+    display:block;
+    top:0;
+    bottom:0;
+    float:left;
+    padding:1em;
+    background-color: #f8eecb;
+    min-width:5em;
+}
+.rows .row .text {
+    display:block;
+    padding:1em 1em 1em 8em;
+    background-color: #e9d6e9;
+}
+
+.rows .row .text:empty {
+    display:none;
+}
